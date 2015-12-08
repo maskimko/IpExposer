@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +25,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet
 public class IpExposer extends HttpServlet {
+
+    private static Logger logger = Logger.getLogger(IpExposer.class.getCanonicalName());
+    private static final String XFORWARDEDFOR = "x-forwarded-for";
+
+    {
+        logger.setLevel(Level.INFO);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -80,15 +89,19 @@ public class IpExposer extends HttpServlet {
         PrintWriter writer = resp.getWriter();
 
         if (full != null && full.equals("true")) {
+            logger.info("Requesting detailed information");
             writer.println(getFullInfo(req, resp));
         } else {
             resp.setContentType("text");
             String remoteAddr = null;
             if (proxy != null && proxy.equals("true")) {
+                logger.info("will use proxy host address as a source host");
                 remoteAddr = req.getRemoteAddr();
             } else {
+                logger.info("Will ignore proxy host as the source host");
                 remoteAddr = getXForwardedFor(req);
                 if (remoteAddr == null) {
+                    logger.info("Got the source host address from the request");
                     remoteAddr = req.getRemoteAddr();
                 }
             }
@@ -100,12 +113,20 @@ public class IpExposer extends HttpServlet {
     private String getXForwardedFor(HttpServletRequest req) {
         String value = null;
         Enumeration<String> headerNames = req.getHeaderNames();
+        logger.info("List of header entries:");
         while (headerNames.hasMoreElements()) {
+
             String hName = headerNames.nextElement();
-            if (hName.toLowerCase().equals("x-forwarded-for")) {
-                value = req.getParameter(hName);
+            logger.info("\t\"" + hName + "\"");
+            if (hName.toLowerCase().trim().equals(XFORWARDEDFOR)) {
+                value = req.getHeader(hName);
+                logger.info("Actual source host ip address is " + value);
+                logger.info("Got source address from the header");
                 break;
             }
+        }
+        if (value == null) {
+            logger.info("It seems that request was not proxied");
         }
         return value;
     }
