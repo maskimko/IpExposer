@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -40,7 +42,7 @@ public class IpExposer extends HttpServlet {
     }
 
     private String getFullInfo(HttpServletRequest req, HttpServletResponse resp) {
-        Map<String, String> headerLines = new HashMap<String, String>();
+        Map<String, String> headerLines = new HashMap<>();
         Enumeration<String> headerNames = req.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String hName = headerNames.nextElement();
@@ -69,7 +71,7 @@ public class IpExposer extends HttpServlet {
             String a = attrs.nextElement();
             Object aObj = req.getAttribute(a);
 
-            if (aObj instanceof KeycloakSecurityContext) {
+            if (aObj instanceof KeycloakSecurityContext || aObj instanceof RefreshableKeycloakSecurityContext) {
                 KeycloakSecurityContext c = (KeycloakSecurityContext) aObj;
                 KeykloakSecurityConstraintParser keykloakSecurityConstraintParser = new KeykloakSecurityConstraintParser(c);
                 sb.append("<li>").append(a).append("=").append(keykloakSecurityConstraintParser.toHtmlString());

@@ -12,7 +12,7 @@ import org.keycloak.KeycloakSecurityContext;
  * @author maskimko
  */
 public class KeykloakSecurityConstraintParser {
-    private KeycloakSecurityContext context;
+    private final KeycloakSecurityContext context;
 
     public KeykloakSecurityConstraintParser(KeycloakSecurityContext context) {
         this.context = context;
