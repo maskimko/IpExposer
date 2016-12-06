@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.keycloak.KeycloakSecurityContext;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -66,7 +67,15 @@ public class IpExposer extends HttpServlet {
         Enumeration<String> attrs = req.getAttributeNames();
         while (attrs.hasMoreElements()) {
             String a = attrs.nextElement();
-            sb.append("<li>").append(a).append("=").append(req.getAttribute(a));
+            Object aObj = req.getAttribute(a);
+
+            if (aObj instanceof KeycloakSecurityContext) {
+                KeycloakSecurityContext c = (KeycloakSecurityContext) aObj;
+                KeykloakSecurityConstraintParser keykloakSecurityConstraintParser = new KeykloakSecurityConstraintParser(c);
+                sb.append("<li>").append(a).append("=").append(keykloakSecurityConstraintParser.toHtmlString());
+            } else {
+                sb.append("<li>").append(a).append("=").append(req.getAttribute(a));
+            }
         }
         sb.append("<h1>Session details</h1>");
         sb.append("<li>Requested Session id: ").append(req.getRequestedSessionId());
