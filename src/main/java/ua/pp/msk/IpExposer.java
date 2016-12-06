@@ -71,13 +71,19 @@ public class IpExposer extends HttpServlet {
             String a = attrs.nextElement();
             Object aObj = req.getAttribute(a);
 
-            if (aObj instanceof KeycloakSecurityContext || aObj instanceof RefreshableKeycloakSecurityContext) {
+            if (aObj.getClass().equals(KeycloakSecurityContext.class)) {
                 KeycloakSecurityContext c = (KeycloakSecurityContext) aObj;
-                KeykloakSecurityConstraintParser keykloakSecurityConstraintParser = new KeykloakSecurityConstraintParser(c);
-                sb.append("<li>").append(a).append("=").append(keykloakSecurityConstraintParser.toHtmlString());
-            } else {
+                KeykloakSecurityConstraintParser parser = new KeykloakSecurityConstraintParser(c);
+                sb.append("<li>").append(a).append(" = ").append(parser.toHtmlString());
+            } else if (aObj.getClass().equals(RefreshableKeycloakSecurityContext.class))  {
+                KeycloakSecurityContext c = (RefreshableKeycloakSecurityContext) aObj;
+                KeykloakSecurityConstraintParser parser = new KeykloakSecurityConstraintParser(c);
+                sb.append("<li>").append(a).append(" = ").append(parser.toHtmlString());
+        
+      }      else {
                 sb.append("<li>").append(a).append("=").append(req.getAttribute(a));
             }
+            
         }
         sb.append("<h1>Session details</h1>");
         sb.append("<li>Requested Session id: ").append(req.getRequestedSessionId());

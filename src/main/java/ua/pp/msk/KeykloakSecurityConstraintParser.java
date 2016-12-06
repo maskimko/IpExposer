@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package ua.pp.msk;
+
 import org.keycloak.AuthorizationContext;
 import org.keycloak.KeycloakSecurityContext;
 
@@ -12,6 +13,7 @@ import org.keycloak.KeycloakSecurityContext;
  * @author maskimko
  */
 public class KeykloakSecurityConstraintParser {
+
     private final KeycloakSecurityContext context;
 
     public KeykloakSecurityConstraintParser(KeycloakSecurityContext context) {
@@ -28,14 +30,14 @@ public class KeykloakSecurityConstraintParser {
         sb.append("\tToken: ");
         sb.append(context.getTokenString()).append("\n");
         AuthorizationContext authorizationContext = context.getAuthorizationContext();
-        sb.append(authorizationContext.toString().replaceAll("\t", "\t\t"));
+        if (authorizationContext != null) {
+            sb.append(authorizationContext.toString().replaceAll("\t", "\t\t"));
+        }
         return sb.toString();
     }
-    
-    
-    public String toHtmlString(){
-        return toString().replaceAll("\n", "<br/>").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+
+    public String toHtmlString() {
+        return this.toString().replaceAll("\n", "<br/>").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
     }
-    
-    
+
 }

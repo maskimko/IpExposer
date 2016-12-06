@@ -30,7 +30,8 @@ public class AuthorizarionContextParser {
             sb.append("\tPermissions:\n");
             Iterator<Permission> pi = context.getPermissions().iterator();
             while (pi.hasNext()) {
-                sb.append("\t").append(pi.next().toString().replaceAll("\t", "\t\t")).append("\n");
+                Permission p = pi.next();
+               if (p!=null) sb.append("\t").append(p.toString().replaceAll("\t", "\t\t")).append("\n");
             }
         }
         return sb.toString();

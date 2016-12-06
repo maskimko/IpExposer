@@ -6,6 +6,7 @@
 package ua.pp.msk;
 
 import java.util.Arrays;
+import java.util.Set;
 import org.keycloak.representations.idm.authorization.Permission;
 
 /**
@@ -21,7 +22,12 @@ public class PermissionParser {
 
     @Override
     public String toString() {
-        return "Permission\n\tresource set id: " + perm.getResourceSetId() + "\n\tresource set name: " + perm.getResourceSetName() + "\n\tscopes:" + Arrays.toString(perm.getScopes().toArray());
+        Set<String> sc = perm.getScopes();
+        String scopes = "none";
+        if (sc != null && !sc.isEmpty()){
+            scopes = Arrays.toString(sc.toArray());
+        }
+        return "Permission\n\tresource set id: " + perm.getResourceSetId() + "\n\tresource set name: " + perm.getResourceSetName() + "\n\tscopes:" + scopes;
     }
     
     
