@@ -62,6 +62,12 @@ public class IpExposer extends HttpServlet {
         sb.append("<h2>Remote</h2>");
         sb.append("<br/>Remote address: ").append(req.getRemoteAddr()).append("<br/>Remote hostname: ").append(req.getRemoteHost()).append("<br/>Remote port: ").append(req.getRemotePort())
                 .append("<br/>Remote user: ").append(req.getRemoteUser());
+        sb.append("<h1>Attributes</h1>");
+        Enumeration<String> attrs = req.getAttributeNames();
+        while (attrs.hasMoreElements()) {
+            String a = attrs.nextElement();
+            sb.append("<li>").append(a).append("=").append(req.getAttribute(a));
+        }
         sb.append("<h1>Session details</h1>");
         sb.append("<li>Requested Session id: ").append(req.getRequestedSessionId());
         sb.append("<li>Request URI: ").append(req.getRequestURI());

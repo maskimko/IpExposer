@@ -4,7 +4,7 @@
     <groupId>ua.pp.msk</groupId>
     <artifactId>IpExposer</artifactId>
     <packaging>war</packaging>
-    <version>1.2</version>
+    <version>1.3</version>
     <name>IP Address exposer</name>
     <url>http://maven.apache.org</url>
     <description>Simple Web application which returns the ip address of the source host</description>
