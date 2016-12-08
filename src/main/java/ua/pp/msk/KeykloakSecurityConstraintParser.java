@@ -32,6 +32,8 @@ public class KeykloakSecurityConstraintParser {
         AuthorizationContext authorizationContext = context.getAuthorizationContext();
         if (authorizationContext != null) {
             sb.append(authorizationContext.toString().replaceAll("\t", "\t\t"));
+        } else {
+             sb.append("\tAuthorizarion context is null\n");
         }
         return sb.toString();
     }
