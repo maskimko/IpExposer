@@ -2,7 +2,6 @@ package ua.pp.msk;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.keycloak.KeycloakSecurityContext;
 
 
 /*
@@ -33,7 +31,7 @@ public class IpExposer extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(IpExposer.class.getCanonicalName());
     private static final String XFORWARDEDFOR = "x-forwarded-for";
 
-static    {
+    static {
         LOGGER.setLevel(Level.INFO);
     }
 
@@ -60,7 +58,7 @@ static    {
         }
         sb.append("<h1>Parameters</h1>");
         for (String pName : parameterMap.keySet()) {
-             if (pName.equals("role")){
+            if (pName.equals("role")) {
                 rolesToCheck = parameterMap.get(pName);
             }
             sb.append("<li>").append(pName).append("=").append(Arrays.asList(parameterMap.get(pName)));
@@ -76,37 +74,30 @@ static    {
         while (attrs.hasMoreElements()) {
             String a = attrs.nextElement();
             Object aObj = req.getAttribute(a);
-            
-           if (a.equals(KeycloakSecurityContext.class.getName())){ if (aObj instanceof KeycloakSecurityContext)  {
-                KeycloakSecurityContext c = (KeycloakSecurityContext) aObj;
-                KeykloakSecurityConstraintParser parser = new KeykloakSecurityConstraintParser(c);
-                sb.append("<li>").append(a).append(" = ").append(parser.toHtmlString());
-           }
-      }      else {
-                sb.append("<li>").append(a).append("=").append(req.getAttribute(a));
-            }
-            
+
+            sb.append("<li>").append(a).append("=").append(req.getAttribute(a));
+
         }
         Cookie[] cookies = req.getCookies();
-        if (cookies != null){
+        if (cookies != null) {
             sb.append("<h1>Cookies</h1>");
             if (cookies.length == 0) {
-                 sb.append("<li>No cookies");
+                sb.append("<li>No cookies");
             } else {
-                for (Cookie c : cookies){
+                for (Cookie c : cookies) {
                     if (c != null) {
-                    sb.append("<li>&nbsp;").append(String.format("Name:&nbsp;%s&nbsp;Value:&nbsp%s;&nbsp;Domain:&nbsp;%s&nbsp;Path:&nbsp;%s&nbsp;Max age:&nbsp;%d&nbsp;Version:&nbsp;%d&nbsp;Secure:&nbsp;%s&nbsp;Comment:&nbsp;%s ", 
-                            c.getName(), c.getValue(), c.getDomain(), c.getPath(), c.getMaxAge(), c.getVersion(), c.getSecure(), c.getComment()));
+                        sb.append("<li>&nbsp;").append(String.format("Name:&nbsp;%s&nbsp;Value:&nbsp%s;&nbsp;Domain:&nbsp;%s&nbsp;Path:&nbsp;%s&nbsp;Max age:&nbsp;%d&nbsp;Version:&nbsp;%d&nbsp;Secure:&nbsp;%s&nbsp;Comment:&nbsp;%s ",
+                                c.getName(), c.getValue(), c.getDomain(), c.getPath(), c.getMaxAge(), c.getVersion(), c.getSecure(), c.getComment()));
                     }
                 }
             }
         }
-        if (rolesToCheck != null && rolesToCheck.length > 0){
-             sb.append("<h1>Roles</h1>List from request uri<br/>");
-             for (String role : rolesToCheck){
-                  sb.append("<li>User: ").append(req.isUserInRole(role) ? " is " : " is not ").append(" in role ").append(role);
-             }
-        } 
+        if (rolesToCheck != null && rolesToCheck.length > 0) {
+            sb.append("<h1>Roles</h1>List from request uri<br/>");
+            for (String role : rolesToCheck) {
+                sb.append("<li>User: ").append(req.isUserInRole(role) ? " is " : " is not ").append(" in role ").append(role);
+            }
+        }
         sb.append("<h1>Session details</h1>");
         sb.append("<li>Requested Session id: ").append(req.getRequestedSessionId());
         sb.append("<li>Request URI: ").append(req.getRequestURI());
@@ -175,7 +166,5 @@ static    {
         }
         return value;
     }
-    
- 
 
 }
